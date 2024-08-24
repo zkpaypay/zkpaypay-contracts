@@ -2,9 +2,9 @@
 pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
-import {Counter} from "../src/mocks/ZKPayPay.sol";
+import {ZKpaypay} from "../src/ZKPayPay.sol";
 
-contract CounterTest is Test {
+contract ZKpaypayTest is Test {
     Counter public counter;
 
     function setUp() public {
