@@ -63,4 +63,8 @@ contract ZKpaypay is IZKpaypay, Ownable {
     function verifyCipher(bytes memory _publicKey, uint256 _privateKey) external view returns (bool) {
         return CaesarCipher.verify(_publicKey, _privateKey, msg.sender);
     }
+
+    function getBalanceOf(address _address) external view returns (uint256) {
+        return token.balanceOf(address(_address));
+    }
 }

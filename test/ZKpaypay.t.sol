@@ -28,13 +28,14 @@ contract ZKpaypayTest is Test {
         zkpaypay.settle(x, y);
     }
 
-    function testGetCipher() public {        
-        address MsgSender = address(0x1);
-        bytes memory addr = abi.encodePacked(MsgSender, "1200");
+    function testGetCipher() public {
+        address MsgSender = address(0xaF90B7302942E0cc3FA2758Ce9f9E7295bB08AB3);
+        bytes memory addr = abi.encodePacked(MsgSender, "100000000000000000000");
+        console.logBytes(addr);
         bytes memory x = zkpaypay.getCipher(addr, 2);
         console.logBytes(x);
 
-        vm.prank(address(0x2));
+        vm.prank(address(0xaF90B7302942E0cc3FA2758Ce9f9E7295bB08AB3));
         bool verify = zkpaypay.verifyCipher(x, 2);
         console.logBool(verify);
     }
