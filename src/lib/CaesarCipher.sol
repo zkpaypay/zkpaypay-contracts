@@ -15,21 +15,18 @@ library CaesarCipher {
         return text;
     }
 
-    function verify(bytes memory _publicKey, uint256 _privateKey) external pure returns (bool) {
+    function verify(bytes memory _publicKey, uint256 _privateKey) public pure returns (bool) {
         bytes memory text = _publicKey;
         for (uint i = 0; i < text.length; i++) {
             bytes1 char = text[i];
             if (char >= 0x41 && char <= 0x5A) { // Uppercase A-Z (ASCII 65-90)
-                if (bytes1(uint8((uint8(char) - 0x41 + _privateKey) % 26 + 0x41)) != text[i]) {
-                    return false;
-                }
+                text[i] = bytes1(uint8((uint8(char) - 0x41 + 26 - _privateKey) % 26 + 0x41));
             } else if (char >= 0x61 && char <= 0x7A) { // Lowercase a-z (ASCII 97-122)
-                if (bytes1(uint8((uint8(char) - 0x61 + _privateKey) % 26 + 0x61)) != text[i]) {
-                    return false;
-                }
+                text[i] = bytes1(uint8((uint8(char) - 0x61 + 26 - _privateKey) % 26 + 0x61));
             }
         }
-        return true;
+
+        return keccak256(text) == keccak256("hello");
     }
 
     function decryptionCipher(bytes memory _publicKey, uint256 _privateKey) public pure returns (address, uint256) {
