@@ -43,8 +43,8 @@ contract ZKpaypay is IZKpaypay, Ownable {
     
     function settle(bytes memory _publicKey, uint256 _privateKey) external {
         for (uint256 i = 0; i < publicKeyData.length; i++) {
-            if (CaesarCipher.verify(publicKeyData[i].key, _privateKey)) {
-                (address _to, uint256 _amount) = CaesarCipher.decryptionCipher(_publicKey, _privateKey);
+            if (CaesarCipher.verify(publicKeyData[i].key, _privateKey, msg.sender)) {
+                (address _to, uint256 _amount) = CaesarCipher.decrypt(_publicKey, _privateKey);
                 IERC20(token).transfer(_to, _amount);
 
                 publicKeyData[i].settled = true;
@@ -60,7 +60,7 @@ contract ZKpaypay is IZKpaypay, Ownable {
         return CaesarCipher.getCipher(_text, _privateKey);
     }
 
-    function verifyCipher(bytes memory _cipher, uint256 _privateKey) external pure returns (bool) {
-        return CaesarCipher.verify(_cipher, _privateKey);
+    function verifyCipher(bytes memory _publicKey, uint256 _privateKey) external view returns (bool) {
+        return CaesarCipher.verify(_publicKey, _privateKey, msg.sender);
     }
 }

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 library CaesarCipher {
+    // Encrypt the given text using Caesar Cipher
     function getCipher(bytes memory _text, uint256 _privateKey) external pure returns (bytes memory) {
         bytes memory text = _text;
         for (uint i = 0; i < text.length; i++) {
@@ -15,30 +16,29 @@ library CaesarCipher {
         return text;
     }
 
-    function verify(bytes memory _publicKey, uint256 _privateKey) public pure returns (bool) {
-        bytes memory text = _publicKey;
-        for (uint i = 0; i < text.length; i++) {
-            bytes1 char = text[i];
-            if (char >= 0x41 && char <= 0x5A) { // Uppercase A-Z (ASCII 65-90)
-                text[i] = bytes1(uint8((uint8(char) - 0x41 + 26 - _privateKey) % 26 + 0x41));
-            } else if (char >= 0x61 && char <= 0x7A) { // Lowercase a-z (ASCII 97-122)
-                text[i] = bytes1(uint8((uint8(char) - 0x61 + 26 - _privateKey) % 26 + 0x61));
-            }
-        }
-
-        return keccak256(text) == keccak256("hello");
+    // Verify the encrypted text by decrypting it and checking if it matches the original text
+    function verify(bytes memory _publicKey, uint256 _privateKey, address _addr) public pure returns (bool) {
+        (address extractedAddress,) = decrypt(_publicKey, _privateKey);
+        return extractedAddress == _addr;
     }
 
-    function decryptionCipher(bytes memory _publicKey, uint256 _privateKey) public pure returns (address, uint256) {
-        bytes memory text = _publicKey;
+    // Decrypt the given cipher text using Caesar Cipher
+    function _decrypt(bytes memory _cipher, uint256 _privateKey) internal pure returns (bytes memory) {
+        bytes memory text = _cipher;
         for (uint i = 0; i < text.length; i++) {
             bytes1 char = text[i];
             if (char >= 0x41 && char <= 0x5A) { // Uppercase A-Z (ASCII 65-90)
-                text[i] = bytes1(uint8((uint8(char) - 0x41 + 26 - _privateKey) % 26 + 0x41));
+                text[i] = bytes1(uint8((uint8(char) - 0x41 + 26 - (_privateKey % 26)) % 26 + 0x41));
             } else if (char >= 0x61 && char <= 0x7A) { // Lowercase a-z (ASCII 97-122)
-                text[i] = bytes1(uint8((uint8(char) - 0x61 + 26 - _privateKey) % 26 + 0x61));
+                text[i] = bytes1(uint8((uint8(char) - 0x61 + 26 - (_privateKey % 26)) % 26 + 0x61));
             }
         }
+        return text;
+    }
+
+    // Decrypt the cipher text and extract address and uint256 value
+    function decrypt(bytes memory _publicKey, uint256 _privateKey) public pure returns (address, uint256) {
+        bytes memory text = _decrypt(_publicKey, _privateKey);
 
         address extractedAddress;
         uint256 extractedUint256;

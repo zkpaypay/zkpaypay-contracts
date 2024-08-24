@@ -28,10 +28,13 @@ contract ZKpaypayTest is Test {
         zkpaypay.settle(x, y);
     }
 
-    function testGetCipher() public {
-        bytes memory x = zkpaypay.getCipher("hello", 2);
+    function testGetCipher() public {        
+        address MsgSender = address(0x1);
+        bytes memory addr = abi.encodePacked(MsgSender, "1200");
+        bytes memory x = zkpaypay.getCipher(addr, 2);
         console.logBytes(x);
 
+        vm.prank(address(0x2));
         bool verify = zkpaypay.verifyCipher(x, 2);
         console.logBool(verify);
     }
@@ -39,12 +42,11 @@ contract ZKpaypayTest is Test {
     function testStore() public {
         sjpy.mint(address(this), 100 ether);
         sjpy.approve(address(zkpaypay), 100 ether);
-        zkpaypay.storePublicKey("hello", 100 ether);
+        zkpaypay.storePublicKey("hello2000", 100 ether);
 
         zkpaypay.storePrivateKey(2);
 
-        zkpaypay.settle("hello", 2);
+        zkpaypay.settle("hello1000", 2);
         sjpy.balanceOf(address(this));
-
     }
 }
