@@ -67,7 +67,18 @@ $ cast --help
 
 # Run
 
+## Deploy
 ```
 source .env
 forge script script/ZKpaypay.s.sol:ZKpaypayScript --rpc-url ${RPC_URL} --broadcast --verify -vvvv --private-key ${PRIVATE_KEY}
+```
+
+```
+source .env
+forge script script/ERC20.s.sol:SJPYScript --rpc-url ${RPC_URL} --broadcast --verify -vvvv --private-key ${PRIVATE_KEY}
+```
+
+## Verify
+```
+forge verify-contract ${CONTRACT_ADDRESS} --etherscan-api-key ${ETHERSCAN_API_KEY} ./src/ZKpaypay.sol:ZKpaypay --chain 534351
 ```
