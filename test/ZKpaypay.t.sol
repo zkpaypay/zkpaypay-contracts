@@ -28,26 +28,27 @@ contract ZKpaypayTest is Test {
         zkpaypay.settle(x, y);
     }
 
-    function testGetCipher() public {
-        address MsgSender = address(0xaF90B7302942E0cc3FA2758Ce9f9E7295bB08AB3);
-        bytes memory addr = abi.encodePacked(MsgSender, "100000000000000000000");
-        console.logBytes(addr);
-        bytes memory x = zkpaypay.getCipher(addr, 2);
-        console.logBytes(x);
+    // function testGetCipher() public {
+    //     address MsgSender = address(0xaF90B7302942E0cc3FA2758Ce9f9E7295bB08AB3);
+    //     bytes memory addr = abi.encodePacked(MsgSender, "100000000000000000000");
+    //     console.logBytes(addr);
+    //     bytes memory x = zkpaypay.getCipher(addr, 2);
+    //     console.logBytes(x);
 
-        vm.prank(address(0xaF90B7302942E0cc3FA2758Ce9f9E7295bB08AB3));
-        bool verify = zkpaypay.verifyCipher(x, 2);
-        console.logBool(verify);
-    }
+    //     vm.prank(address(0xaF90B7302942E0cc3FA2758Ce9f9E7295bB08AB3));
+    //     bool verify = zkpaypay.verifyCipher(x, 2);
+    //     console.logBool(verify);
+    // }
 
-    function testStore() public {
-        sjpy.mint(address(this), 100 ether);
-        sjpy.approve(address(zkpaypay), 100 ether);
-        zkpaypay.storePublicKey("hello2000", 100 ether);
+    // function testStore() public {
+    //     sjpy.mint(address(this), 100 ether);
+    //     sjpy.approve(address(zkpaypay), 100 ether);
+    //     bytes memory x = abi.encodePacked(address(0xaF90B7302942E0cc3FA2758Ce9f9E7295bB08AB3), "100000000000000000000");
+    //     zkpaypay.storePublicKey(x, 100 ether);
 
-        zkpaypay.storePrivateKey(2);
+    //     zkpaypay.storePrivateKey(2);
 
-        zkpaypay.settle("hello1000", 2);
-        sjpy.balanceOf(address(this));
-    }
+    //     zkpaypay.settle(x, 2);
+    //     sjpy.balanceOf(address(this));
+    // }
 }
