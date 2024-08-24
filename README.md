@@ -64,3 +64,10 @@ $ forge --help
 $ anvil --help
 $ cast --help
 ```
+
+# Run
+
+```
+source .env
+forge script script/ZKpaypay.s.sol:ZKpaypayScript --rpc-url ${RPC_URL} --broadcast --verify -vvvv --private-key ${PRIVATE_KEY}
+```
