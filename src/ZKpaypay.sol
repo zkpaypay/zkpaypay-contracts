@@ -7,20 +7,20 @@ import {IZKpaypay} from "./interfaces/IZKpaypay.sol";
 import {CaesarCipher} from "./lib/CaesarCipher.sol";
 
 contract ZKpaypay is IZKpaypay, Ownable {
-
-    // address public operatorAddress;
-
     IERC20 public token;
 
-    mapping(bytes32 => bool) public openedPrivateKey;
-    mapping(bytes32 => bool) public openedPublicKey;
-
-    struct Transaction {
-        bytes32 publicKey;
+    struct PublicKeyData {
+        bytes key;
         bool settled;
     }
 
-    Transaction[] public transactions;
+    struct PrivateKeyData {
+        uint256 key;
+        bool settled;
+    }
+
+    PublicKeyData[] public publicKeyData;
+    PrivateKeyData[] public privateKeyData;
 
     constructor(
         address _tokenAddress
@@ -28,33 +28,26 @@ contract ZKpaypay is IZKpaypay, Ownable {
         token = IERC20(_tokenAddress);
     }
 
-    function storePrivateKey(bytes32 key) external {
-        openedPrivateKey[key] = false;
+    function storePrivateKey(uint256 _key) external {
+        privateKeyData.push(PrivateKeyData(_key, false));
     }
 
-    function storePublicKey(bytes32 key) external {
-        openedPublicKey[key] = false;
-    }
-
-    function _openedKey(bytes32 _privateKey, bytes32 _publicKey) internal view returns (bool) {
-        return openedPrivateKey[_privateKey] && openedPublicKey[_publicKey];
-    }
-
-    function settle(bytes32 _publicKey, uint256 _privateKey) external {
-
+    function storePublicKey(bytes memory _key) external {
+        publicKeyData.push(PublicKeyData(_key, false));
     }
     
-    function _settle(uint256 _privateKey) internal {
-        for (uint256 i = 0; i < transactions.length; i++) {
-            if (CaesarCipher.verify(transactions[i].publicKey, _privateKey)) {
-                transactions[i].settled = true;
+    function settle(bytes memory _publicKey, uint256 _privateKey) external {
+        for (uint256 i = 0; i < publicKeyData.length; i++) {
+            if (CaesarCipher.verify(publicKeyData[i].key, _privateKey)) {
+                (address _to, uint256 _amount) = CaesarCipher.decryptionCipher(_publicKey, _privateKey);
+                IERC20(token).transfer(_to, _amount);
+                publicKeyData[i].settled = true;
                 break;
             }
-        }
-        
-        (address _to, uint256 _amount) = CaesarCipher.decryptionCipher(_publicKey, _privateKey);
-
-        IERC20(token).transfer(msg.sender, 1);
+        }        
     }
 
+    function getCipher(bytes memory _text, uint256 _privateKey) external pure returns (bytes memory) {
+        return CaesarCipher.getCipher(_text, _privateKey);
+    }
 }

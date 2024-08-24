@@ -5,13 +5,13 @@ import {Script, console} from "forge-std/Script.sol";
 import {ZKpaypay} from "../src/ZKpaypay.sol";
 
 contract ZKpaypayScript is Script {
+    address tokenAddress = address(0x0);
+
     function setUp() public {}
 
     function run() public {
         vm.startBroadcast();
-
-        counter = new Counter();
-
+        ZKpaypay zkpaypay = new ZKpaypay(address(0x0));
         vm.stopBroadcast();
     }
 }

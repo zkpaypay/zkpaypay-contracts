@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-contract CaesarCipher {
+library CaesarCipher {
     function getCipher(bytes memory _text, uint256 _privateKey) external pure returns (bytes memory) {
         bytes memory text = _text;
         for (uint i = 0; i < text.length; i++) {
